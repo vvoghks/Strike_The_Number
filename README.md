@@ -39,6 +39,7 @@ $ git clone https://github.com/vvoghks/Strike_The_Number.git
 $ docker build . -t strike:0.1
 ```
 3. 게임을 실행한다.
+```
 $ docker run -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix strike:0.1
 ```
 
