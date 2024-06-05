@@ -18,5 +18,5 @@ RUN apt-get update -q && \
     pip3 install -r requirements.txt
 
 # Run script when the container launches
-CMD ["python", "pm.py"]
+CMD ["python", "main.py"]
 
