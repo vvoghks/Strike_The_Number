@@ -34,7 +34,7 @@ def create_restart_button():
     button_height = 40
     button_rect = pygame.Rect(10, 10, button_width, button_height)
     pygame.draw.rect(window, pygame.Color('orange'), button_rect)
-    restart_text = input_font.render("RE", True, (0, 0, 0))
+    restart_text = input_font.render("R", True, (0, 0, 0))
     text_rect = restart_text.get_rect(center=button_rect.center)
     window.blit(restart_text, text_rect)
     return button_rect
@@ -113,6 +113,14 @@ while running:
                     input_text = ''
                     disabled_digits.clear()
         elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_r:
+                # Restart the game
+                random_number = generate_random_number()
+                print(f"Random Number: {random_number}")
+                input_values.clear()
+                results.clear()
+                input_text = ''
+                disabled_digits.clear()
             if event.key == pygame.K_BACKSPACE:
                 if input_text:
                     disabled_digits.discard(input_text[-1])
@@ -178,10 +186,25 @@ while running:
 
     # Check if it's the 18th try
     if len(input_values) == max_values:
-        # Display "YOU LOSE! The answer is <number>" in dark red
-        lose_text = font.render("YOU LOSE! The answer is " + random_number, True, (255, 0, 0))
-        lose_rect = lose_text.get_rect(center=(window_width // 2, window_height // 2))
+        # Display "YOU LOSE!" on one line
+        lose_text = font.render("YOU LOSE!", True, (255, 0, 0))
+        lose_rect = lose_text.get_rect(center=(window_width // 2, window_height // 2 - 30))
         window.blit(lose_text, lose_rect)
+
+        # Display "The answer is <number>." on the next line
+        answer_text = font.render("The answer is " + random_number + ".", True, (255, 0, 0))
+        answer_rect = answer_text.get_rect(center=(window_width // 2, window_height // 2 + 30))
+        window.blit(answer_text, answer_rect)
+
+        # Disable buttons and keyboard inputs
+        buttons = []  # Empty the buttons list
+        input_text = ''  # Clear the input text
+        disabled_digits = set()  # Clear disabled digits set
+
+        # Display "Press 'r' to restart"
+        restart_text = font.render("Press 'r' to restart", True, (0, 0, 255))
+        restart_rect = restart_text.get_rect(center=(window_width // 2, window_height - 60))
+        window.blit(restart_text, restart_rect)
 
     # Draw the restart button
     create_restart_button()
