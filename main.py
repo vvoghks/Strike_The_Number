@@ -75,7 +75,10 @@ while running:
                     elif label == 'Enter':
                         if len(input_text) == 3:
                             balls, strikes = calculate_balls_and_strikes(random_number, input_text)
-                            result_text = f"{balls}B - {strikes}S"
+                            if strikes == 3:
+                                result_text = "Strike Out"
+                            else:
+                                result_text = f"{balls}B - {strikes}S"
                             input_values.append(input_text)
                             results.append(result_text)
                             if len(input_values) > max_values:
