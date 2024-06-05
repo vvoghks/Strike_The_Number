@@ -53,7 +53,7 @@ while running:
                     input_text = ''
                 elif event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
-                else:
+                elif event.unicode.isdigit():
                     input_text += event.unicode
 
     # Fill the screen with a white background
