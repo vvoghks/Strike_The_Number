@@ -73,6 +73,7 @@ color = color_inactive
 
 # Main loop
 running = True
+tries = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -99,6 +100,7 @@ while running:
                                     results.pop(0)
                                 input_text = ''
                                 disabled_digits.clear()
+                                tries += 1
                         else:
                             if len(input_text) < 3 and label not in disabled_digits:
                                 input_text += label
@@ -112,6 +114,7 @@ while running:
                     results.clear()
                     input_text = ''
                     disabled_digits.clear()
+                    tries = 0
 
     # Fill the screen with a white background
     window.fill((255, 255, 255))
@@ -151,6 +154,13 @@ while running:
                 result_text = table_font.render(results[row], True, (0, 0, 0))
                 result_rect = result_text.get_rect(center=cell_rect.center)
                 window.blit(result_text, result_rect)
+
+    # Check if it's the 18th try
+    if len(input_values) == max_values:
+        # Display "YOU LOSE! The answer is <number>" in dark red
+        lose_text = font.render("YOU LOSE! The answer is " + random_number, True, (255, 0, 0))
+        lose_rect = lose_text.get_rect(center=(window_width // 2, window_height // 2))
+        window.blit(lose_text, lose_rect)
 
     # Draw the restart button
     create_restart_button()
