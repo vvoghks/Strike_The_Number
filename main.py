@@ -14,6 +14,7 @@ pygame.display.set_caption("Strike The Number")
 font_size = 100
 font = pygame.font.Font(None, font_size)
 input_font = pygame.font.Font(None, 50)
+table_font = pygame.font.Font(None, 36)
 
 # Function to generate a random three-digit number with no repeating digits
 def generate_random_number():
@@ -45,6 +46,8 @@ for i, label in enumerate(button_labels):
 # Input variables
 input_text = ''
 disabled_digits = set()
+input_values = []
+max_values = 10
 color_inactive = pygame.Color('lightskyblue3')
 color_active = pygame.Color('dodgerblue2')
 color = color_inactive
@@ -64,6 +67,9 @@ while running:
                             input_text = input_text[:-1]
                     elif label == 'Enter':
                         if len(input_text) == 3:
+                            input_values.append(input_text)
+                            if len(input_values) > max_values:
+                                input_values.pop(0)
                             input_text = ''
                             disabled_digits.clear()
                     else:
@@ -96,6 +102,20 @@ while running:
         text_surface = input_font.render(label, True, text_color)
         text_rect = text_surface.get_rect(center=rect.center)
         window.blit(text_surface, text_rect)
+
+    # Draw 2-by-10 table
+    table_x = window_width - 300
+    table_y = 100
+    cell_width = 140
+    cell_height = 40
+    for row in range(10):
+        for col in range(2):
+            cell_rect = pygame.Rect(table_x + col * cell_width, table_y + row * cell_height, cell_width, cell_height)
+            pygame.draw.rect(window, pygame.Color('black'), cell_rect, 1)
+            if col == 0 and row < len(input_values):
+                value_text = table_font.render(input_values[row], True, (0, 0, 0))
+                value_rect = value_text.get_rect(center=cell_rect.center)
+                window.blit(value_text, value_rect)
 
     # Update the display
     pygame.display.flip()
