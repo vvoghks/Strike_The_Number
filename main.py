@@ -44,6 +44,7 @@ for i, label in enumerate(button_labels):
 
 # Input variables
 input_text = ''
+disabled_digits = set()
 color_inactive = pygame.Color('lightskyblue3')
 color_active = pygame.Color('dodgerblue2')
 color = color_inactive
@@ -58,12 +59,17 @@ while running:
             for rect, label in buttons:
                 if rect.collidepoint(event.pos):
                     if label == 'Backspace':
-                        input_text = input_text[:-1]
+                        if input_text:
+                            disabled_digits.discard(input_text[-1])
+                            input_text = input_text[:-1]
                     elif label == 'Enter':
-                        input_text = ''
+                        if len(input_text) == 3:
+                            input_text = ''
+                            disabled_digits.clear()
                     else:
-                        if len(input_text) < 3:
+                        if len(input_text) < 3 and label not in disabled_digits:
                             input_text += label
+                            disabled_digits.add(label)
 
     # Fill the screen with a white background
     window.fill((255, 255, 255))
@@ -82,8 +88,12 @@ while running:
 
     # Draw buttons
     for rect, label in buttons:
-        pygame.draw.rect(window, color_inactive, rect)
-        text_surface = input_font.render(label, True, (0, 0, 0))
+        button_color = color_inactive
+        if label == 'Enter' and len(input_text) != 3:
+            button_color = pygame.Color('grey')
+        pygame.draw.rect(window, button_color, rect)
+        text_color = (0, 0, 0) if label not in disabled_digits or label in ['Backspace', 'Enter'] else (128, 128, 128)
+        text_surface = input_font.render(label, True, text_color)
         text_rect = text_surface.get_rect(center=rect.center)
         window.blit(text_surface, text_rect)
 
