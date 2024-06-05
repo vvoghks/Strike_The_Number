@@ -39,8 +39,9 @@ def create_restart_button():
     window.blit(restart_text, text_rect)
     return button_rect
 
-# Generate the random number once
+# Generate the random number once and print it to the shell
 random_number = generate_random_number()
+print(f"Random Number: {random_number}")
 
 # Button settings
 button_width = 100
@@ -106,6 +107,7 @@ while running:
                 restart_button_rect = create_restart_button()
                 if restart_button_rect.collidepoint(event.pos):
                     random_number = generate_random_number()
+                    print(f"Random Number: {random_number}")
                     input_values.clear()
                     results.clear()
                     input_text = ''
@@ -114,16 +116,11 @@ while running:
     # Fill the screen with a white background
     window.fill((255, 255, 255))
 
-    # Render the random three-digit number
-    random_number_text = font.render(random_number, True, (0, 0, 0))
-    random_number_rect = random_number_text.get_rect(center=(window_width // 2 - 100, window_height // 2))
-
-    # Render the input text next to the random number
+    # Render the input text
     input_display_text = font.render(input_text, True, (0, 0, 0))
-    input_display_rect = input_display_text.get_rect(midleft=(random_number_rect.right + 20, window_height // 2))
+    input_display_rect = input_display_text.get_rect(center=(window_width // 2, window_height // 2))
 
-    # Draw the random number and input text on the screen
-    window.blit(random_number_text, random_number_rect)
+    # Draw the input text on the screen
     window.blit(input_display_text, input_display_rect)
 
     # Draw buttons
