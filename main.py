@@ -64,7 +64,7 @@ for i, label in enumerate(button_labels):
 input_text = ''
 disabled_digits = set()
 input_values = []
-max_values = 10
+max_values = 18
 results = []
 color_inactive = pygame.Color('lightskyblue3')
 color_active = pygame.Color('dodgerblue2')
@@ -137,12 +137,12 @@ while running:
         text_rect = text_surface.get_rect(center=rect.center)
         window.blit(text_surface, text_rect)
 
-    # Draw 2-by-10 table
+    # Draw 2-by-18 table
     table_x = window_width - 300
-    table_y = 100
+    table_y = 50
     cell_width = 140
     cell_height = 40
-    for row in range(10):
+    for row in range(18):
         for col in range(2):
             cell_rect = pygame.Rect(table_x + col * cell_width, table_y + row * cell_height, cell_width, cell_height)
             pygame.draw.rect(window, pygame.Color('black'), cell_rect, 1)
