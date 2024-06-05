@@ -49,7 +49,7 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if input_active:
                 if event.key == pygame.K_RETURN:
-                    # Process the input text here
+                    # Optionally process the input text here
                     input_text = ''
                 elif event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
@@ -60,16 +60,19 @@ while running:
     window.fill((255, 255, 255))
 
     # Render the random three-digit number
-    text = font.render(random_number, True, (0, 0, 0))
-    text_rect = text.get_rect(center=(window_width // 2, window_height // 2))
+    random_number_text = font.render(random_number, True, (0, 0, 0))
+    random_number_rect = random_number_text.get_rect(center=(window_width // 2 - 100, window_height // 2))
 
-    # Draw the text on the screen
-    window.blit(text, text_rect)
+    # Render the input text next to the random number
+    input_display_text = font.render(input_text, True, (0, 0, 0))
+    input_display_rect = input_display_text.get_rect(midleft=(random_number_rect.right + 20, window_height // 2))
 
-    # Render the input text
+    # Draw the random number and input text on the screen
+    window.blit(random_number_text, random_number_rect)
+    window.blit(input_display_text, input_display_rect)
+
+    # Render the input text in the input box
     input_surface = input_font.render(input_text, True, (0, 0, 0))
-
-    # Display the input box and text
     window.blit(input_surface, (input_box.x + 5, input_box.y + 5))
     pygame.draw.rect(window, color, input_box, 2)
 
