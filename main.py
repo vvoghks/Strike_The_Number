@@ -72,6 +72,7 @@ color_active = pygame.Color('dodgerblue2')
 color = color_inactive
 
 # Main loop
+game_number = 1
 running = True
 while running:
     for event in pygame.event.get():
@@ -112,6 +113,7 @@ while running:
                     results.clear()
                     input_text = ''
                     disabled_digits.clear()
+                    game_number += 1
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
                 # Restart the game
@@ -121,6 +123,7 @@ while running:
                 results.clear()
                 input_text = ''
                 disabled_digits.clear()
+                game_number += 1
             if event.key == pygame.K_BACKSPACE:
                 if input_text:
                     disabled_digits.discard(input_text[-1])
@@ -147,6 +150,12 @@ while running:
 
     # Fill the screen with a white background
     window.fill((255, 255, 255))
+
+    # Display "<Game #>" on the center top
+    game_text = f"Game {game_number}"
+    game_text_surface = font.render(game_text, True, (0, 0, 0))
+    game_text_rect = game_text_surface.get_rect(center=(window_width // 2, 20))  # Adjust the y-coordinate as needed
+    window.blit(game_text_surface, game_text_rect)
 
     # Render the input text
     input_display_text = font.render(input_text, True, (0, 0, 0))
