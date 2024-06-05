@@ -22,6 +22,12 @@ def generate_random_number():
     random.shuffle(digits)
     return ''.join(digits[:3])
 
+# Function to calculate balls and strikes
+def calculate_balls_and_strikes(random_num, input_num):
+    strikes = sum(1 for i in range(3) if random_num[i] == input_num[i])
+    balls = sum(1 for i in range(3) if input_num[i] in random_num and random_num[i] != input_num[i])
+    return balls, strikes
+
 # Generate the random number once
 random_number = generate_random_number()
 
@@ -48,6 +54,7 @@ input_text = ''
 disabled_digits = set()
 input_values = []
 max_values = 10
+results = []
 color_inactive = pygame.Color('lightskyblue3')
 color_active = pygame.Color('dodgerblue2')
 color = color_inactive
@@ -67,9 +74,13 @@ while running:
                             input_text = input_text[:-1]
                     elif label == 'Enter':
                         if len(input_text) == 3:
+                            balls, strikes = calculate_balls_and_strikes(random_number, input_text)
+                            result_text = f"{balls}B - {strikes}S"
                             input_values.append(input_text)
+                            results.append(result_text)
                             if len(input_values) > max_values:
                                 input_values.pop(0)
+                                results.pop(0)
                             input_text = ''
                             disabled_digits.clear()
                     else:
@@ -116,6 +127,10 @@ while running:
                 value_text = table_font.render(input_values[row], True, (0, 0, 0))
                 value_rect = value_text.get_rect(center=cell_rect.center)
                 window.blit(value_text, value_rect)
+            if col == 1 and row < len(results):
+                result_text = table_font.render(results[row], True, (0, 0, 0))
+                result_rect = result_text.get_rect(center=cell_rect.center)
+                window.blit(result_text, result_rect)
 
     # Update the display
     pygame.display.flip()
