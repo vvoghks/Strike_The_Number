@@ -14,9 +14,11 @@ pygame.display.set_caption("Strike The Number")
 font_size = 100
 font = pygame.font.Font(None, font_size)
 
-# Function to generate a random three-digit number
+# Function to generate a random three-digit number with no repeating digits
 def generate_random_number():
-    return random.randint(100, 999)
+    digits = list("0123456789")
+    random.shuffle(digits)
+    return ''.join(digits[:3])
 
 # Generate the random number once
 random_number = generate_random_number()
@@ -32,7 +34,7 @@ while running:
     window.fill((255, 255, 255))
 
     # Render the random three-digit number
-    text = font.render(str(random_number), True, (0, 0, 0))
+    text = font.render(random_number, True, (0, 0, 0))
 
     # Get the text rect and center it on the screen
     text_rect = text.get_rect(center=(window_width // 2, window_height // 2))
