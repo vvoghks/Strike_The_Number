@@ -28,6 +28,17 @@ def calculate_balls_and_strikes(random_num, input_num):
     balls = sum(1 for i in range(3) if input_num[i] in random_num and random_num[i] != input_num[i])
     return balls, strikes
 
+# Function to create a rectangular restart button
+def create_restart_button():
+    button_width = 100
+    button_height = 40
+    button_rect = pygame.Rect(10, 10, button_width, button_height)
+    pygame.draw.rect(window, pygame.Color('orange'), button_rect)
+    restart_text = input_font.render("Restart", True, (0, 0, 0))
+    text_rect = restart_text.get_rect(center=button_rect.center)
+    window.blit(restart_text, text_rect)
+    return button_rect
+
 # Generate the random number once
 random_number = generate_random_number()
 
@@ -66,30 +77,39 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            for rect, label in buttons:
-                if rect.collidepoint(event.pos):
-                    if label == 'Backspace':
-                        if input_text:
-                            disabled_digits.discard(input_text[-1])
-                            input_text = input_text[:-1]
-                    elif label == 'Enter':
-                        if len(input_text) == 3:
-                            balls, strikes = calculate_balls_and_strikes(random_number, input_text)
-                            if strikes == 3:
-                                result_text = "Strike Out"
-                            else:
-                                result_text = f"{balls}B - {strikes}S"
-                            input_values.append(input_text)
-                            results.append(result_text)
-                            if len(input_values) > max_values:
-                                input_values.pop(0)
-                                results.pop(0)
-                            input_text = ''
-                            disabled_digits.clear()
-                    else:
-                        if len(input_text) < 3 and label not in disabled_digits:
-                            input_text += label
-                            disabled_digits.add(label)
+            if event.button == 1:  # Left mouse button clicked
+                for rect, label in buttons:
+                    if rect.collidepoint(event.pos):
+                        if label == 'Backspace':
+                            if input_text:
+                                disabled_digits.discard(input_text[-1])
+                                input_text = input_text[:-1]
+                        elif label == 'Enter':
+                            if len(input_text) == 3:
+                                balls, strikes = calculate_balls_and_strikes(random_number, input_text)
+                                if strikes == 3:
+                                    result_text = "Strike Out"
+                                else:
+                                    result_text = f"{balls}B - {strikes}S"
+                                input_values.append(input_text)
+                                results.append(result_text)
+                                if len(input_values) > max_values:
+                                    input_values.pop(0)
+                                    results.pop(0)
+                                input_text = ''
+                                disabled_digits.clear()
+                        else:
+                            if len(input_text) < 3 and label not in disabled_digits:
+                                input_text += label
+                                disabled_digits.add(label)
+                # Restart button clicked
+                restart_button_rect = create_restart_button()
+                if restart_button_rect.collidepoint(event.pos):
+                    random_number = generate_random_number()
+                    input_values.clear()
+                    results.clear()
+                    input_text = ''
+                    disabled_digits.clear()
 
     # Fill the screen with a white background
     window.fill((255, 255, 255))
@@ -134,6 +154,9 @@ while running:
                 result_text = table_font.render(results[row], True, (0, 0, 0))
                 result_rect = result_text.get_rect(center=cell_rect.center)
                 window.blit(result_text, result_rect)
+
+    # Draw the restart button
+    create_restart_button()
 
     # Update the display
     pygame.display.flip()
