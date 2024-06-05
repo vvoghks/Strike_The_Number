@@ -43,24 +43,6 @@ def create_restart_button():
 random_number = generate_random_number()
 print(f"Random Number: {random_number}")
 
-# Button settings
-button_width = 160
-button_height = 80
-button_margin = 10
-
-# Create buttons for digits, backspace, and enter
-buttons = []
-button_labels = [
-    '1', '2', '3', '4', '5', '<<',
-    '6', '7', '8', '9', '0', '>>'
-]
-
-for i, label in enumerate(button_labels):
-    x = (i % 6) * (button_width + button_margin) + button_margin
-    y = window_height - (2 - i // 6) * (button_height + button_margin) - button_margin
-    rect = pygame.Rect(x, y, button_width, button_height)
-    buttons.append((rect, label))
-
 # Input variables
 input_text = ''
 disabled_digits = set()
@@ -68,7 +50,6 @@ input_values = []
 max_values = 18
 results = []
 color_active = pygame.Color('lightskyblue3')
-#color_active = pygame.Color('dodgerblue2')
 color = color_active
 
 # Main loop
@@ -81,32 +62,6 @@ while running:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Left mouse button clicked
-                if not game_won and len(input_values) < max_values:
-                    for rect, label in buttons:
-                        if rect.collidepoint(event.pos):
-                            if label == '<<':
-                                if input_text:
-                                    disabled_digits.discard(input_text[-1])
-                                    input_text = input_text[:-1]
-                            elif label == '>>':
-                                if len(input_text) == 3:
-                                    balls, strikes = calculate_balls_and_strikes(random_number, input_text)
-                                    if strikes == 3:
-                                        result_text = "Strike Out"
-                                        game_won = True
-                                    else:
-                                        result_text = f"{balls}B - {strikes}S"
-                                    input_values.append(input_text)
-                                    results.append(result_text)
-                                    if len(input_values) > max_values:
-                                        input_values.pop(0)
-                                        results.pop(0)
-                                    input_text = ''
-                                    disabled_digits.clear()
-                            else:
-                                if len(input_text) < 3 and label not in disabled_digits:
-                                    input_text += label
-                                    disabled_digits.add(label)
                 # Restart button clicked
                 restart_button_rect = create_restart_button()
                 if restart_button_rect.collidepoint(event.pos):
@@ -171,17 +126,6 @@ while running:
     # Draw the input text on the screen
     window.blit(input_display_text, input_display_rect)
 
-    # Draw buttons
-    for rect, label in buttons:
-        button_color = color_active
-        if label == '>>' and len(input_text) != 3:
-            button_color = pygame.Color('grey')
-        pygame.draw.rect(window, button_color, rect)
-        text_color = (0, 0, 0) if label not in disabled_digits or label in ['<<', '>>'] else (128, 128, 128)
-        text_surface = input_font.render(label, True, text_color)
-        text_rect = text_surface.get_rect(center=rect.center)
-        window.blit(text_surface, text_rect)
-
     # Draw 2-by-18 table
     table_x = window_width - 300
     table_y = 50
@@ -219,7 +163,6 @@ while running:
             window.blit(answer_text, answer_rect)
 
         # Disable buttons and keyboard inputs
-        buttons = []  # Empty the buttons list
         input_text = ''  # Clear the input text
         disabled_digits = set()  # Clear disabled digits set
 
