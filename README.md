@@ -58,6 +58,12 @@ $ docker run -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix strike:0.1
 * 제한 초과 시 패배
 * 삼진 (스트라이크 세개) 시 승리
 
+## 실행 예시
+
+![1](https://github.com/vvoghks/Strike_The_Number/assets/81789939/543c3a37-6ac5-4089-a530-09573d69af0b)
+![2](https://github.com/vvoghks/Strike_The_Number/assets/81789939/987ddc37-52e0-484d-aa2c-18676f4603e0)
+![3](https://github.com/vvoghks/Strike_The_Number/assets/81789939/d6e3bad5-5254-424d-9eb6-6b9e3e934066)
+
 # 향후 계획
 
 * 버튼 입력 추가
