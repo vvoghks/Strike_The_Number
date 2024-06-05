@@ -34,7 +34,7 @@ def create_restart_button():
     button_height = 40
     button_rect = pygame.Rect(10, 10, button_width, button_height)
     pygame.draw.rect(window, pygame.Color('orange'), button_rect)
-    restart_text = input_font.render("Restart", True, (0, 0, 0))
+    restart_text = input_font.render("RE", True, (0, 0, 0))
     text_rect = restart_text.get_rect(center=button_rect.center)
     window.blit(restart_text, text_rect)
     return button_rect
@@ -51,8 +51,8 @@ button_margin = 10
 # Create buttons for digits, backspace, and enter
 buttons = []
 button_labels = [
-    '1', '2', '3', '4', '5', 'Backspace',
-    '6', '7', '8', '9', '0', 'Enter'
+    '1', '2', '3', '4', '5', '<<',
+    '6', '7', '8', '9', '0', '>>'
 ]
 
 for i, label in enumerate(button_labels):
@@ -81,11 +81,11 @@ while running:
             if event.button == 1:  # Left mouse button clicked
                 for rect, label in buttons:
                     if rect.collidepoint(event.pos):
-                        if label == 'Backspace':
+                        if label == '<<':
                             if input_text:
                                 disabled_digits.discard(input_text[-1])
                                 input_text = input_text[:-1]
-                        elif label == 'Enter':
+                        elif label == '>>':
                             if len(input_text) == 3:
                                 balls, strikes = calculate_balls_and_strikes(random_number, input_text)
                                 if strikes == 3:
@@ -126,10 +126,10 @@ while running:
     # Draw buttons
     for rect, label in buttons:
         button_color = color_inactive
-        if label == 'Enter' and len(input_text) != 3:
+        if label == '>>' and len(input_text) != 3:
             button_color = pygame.Color('grey')
         pygame.draw.rect(window, button_color, rect)
-        text_color = (0, 0, 0) if label not in disabled_digits or label in ['Backspace', 'Enter'] else (128, 128, 128)
+        text_color = (0, 0, 0) if label not in disabled_digits or label in ['<<', '>>'] else (128, 128, 128)
         text_surface = input_font.render(label, True, text_color)
         text_rect = text_surface.get_rect(center=rect.center)
         window.blit(text_surface, text_rect)
