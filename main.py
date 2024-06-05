@@ -74,36 +74,39 @@ color = color_inactive
 # Main loop
 game_number = 1
 running = True
+game_won = False
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Left mouse button clicked
-                for rect, label in buttons:
-                    if rect.collidepoint(event.pos):
-                        if label == '<<':
-                            if input_text:
-                                disabled_digits.discard(input_text[-1])
-                                input_text = input_text[:-1]
-                        elif label == '>>':
-                            if len(input_text) == 3:
-                                balls, strikes = calculate_balls_and_strikes(random_number, input_text)
-                                if strikes == 3:
-                                    result_text = "Strike Out"
-                                else:
-                                    result_text = f"{balls}B - {strikes}S"
-                                input_values.append(input_text)
-                                results.append(result_text)
-                                if len(input_values) > max_values:
-                                    input_values.pop(0)
-                                    results.pop(0)
-                                input_text = ''
-                                disabled_digits.clear()
-                        else:
-                            if len(input_text) < 3 and label not in disabled_digits:
-                                input_text += label
-                                disabled_digits.add(label)
+                if not game_won and len(input_values) < max_values:
+                    for rect, label in buttons:
+                        if rect.collidepoint(event.pos):
+                            if label == '<<':
+                                if input_text:
+                                    disabled_digits.discard(input_text[-1])
+                                    input_text = input_text[:-1]
+                            elif label == '>>':
+                                if len(input_text) == 3:
+                                    balls, strikes = calculate_balls_and_strikes(random_number, input_text)
+                                    if strikes == 3:
+                                        result_text = "Strike Out"
+                                        game_won = True
+                                    else:
+                                        result_text = f"{balls}B - {strikes}S"
+                                    input_values.append(input_text)
+                                    results.append(result_text)
+                                    if len(input_values) > max_values:
+                                        input_values.pop(0)
+                                        results.pop(0)
+                                    input_text = ''
+                                    disabled_digits.clear()
+                            else:
+                                if len(input_text) < 3 and label not in disabled_digits:
+                                    input_text += label
+                                    disabled_digits.add(label)
                 # Restart button clicked
                 restart_button_rect = create_restart_button()
                 if restart_button_rect.collidepoint(event.pos):
@@ -114,6 +117,7 @@ while running:
                     input_text = ''
                     disabled_digits.clear()
                     game_number += 1
+                    game_won = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
                 # Restart the game
@@ -124,29 +128,32 @@ while running:
                 input_text = ''
                 disabled_digits.clear()
                 game_number += 1
-            if event.key == pygame.K_BACKSPACE:
-                if input_text:
-                    disabled_digits.discard(input_text[-1])
-                    input_text = input_text[:-1]
-            elif event.key == pygame.K_RETURN:
-                if len(input_text) == 3:
-                    balls, strikes = calculate_balls_and_strikes(random_number, input_text)
-                    if strikes == 3:
-                        result_text = "Strike Out"
-                    else:
-                        result_text = f"{balls}B - {strikes}S"
-                    input_values.append(input_text)
-                    results.append(result_text)
-                    if len(input_values) > max_values:
-                        input_values.pop(0)
-                        results.pop(0)
-                    input_text = ''
-                    disabled_digits.clear()
-            elif event.key in [pygame.K_0, pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9]:
-                digit = event.key - pygame.K_0  # Convert key to digit value
-                if len(input_text) < 3 and str(digit) not in disabled_digits:
-                    input_text += str(digit)
-                    disabled_digits.add(str(digit))
+                game_won = False
+            if not game_won and len(input_values) < max_values:
+                if event.key == pygame.K_BACKSPACE:
+                    if input_text:
+                        disabled_digits.discard(input_text[-1])
+                        input_text = input_text[:-1]
+                elif event.key == pygame.K_RETURN:
+                    if len(input_text) == 3:
+                        balls, strikes = calculate_balls_and_strikes(random_number, input_text)
+                        if strikes == 3:
+                            result_text = "Strike Out"
+                            game_won = True
+                        else:
+                            result_text = f"{balls}B - {strikes}S"
+                        input_values.append(input_text)
+                        results.append(result_text)
+                        if len(input_values) > max_values:
+                            input_values.pop(0)
+                            results.pop(0)
+                        input_text = ''
+                        disabled_digits.clear()
+                elif event.key in [pygame.K_0, pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9]:
+                    digit = event.key - pygame.K_0  # Convert key to digit value
+                    if len(input_text) < 3 and str(digit) not in disabled_digits:
+                        input_text += str(digit)
+                        disabled_digits.add(str(digit))
 
     # Fill the screen with a white background
     window.fill((255, 255, 255))
@@ -193,17 +200,23 @@ while running:
                 result_rect = result_text.get_rect(center=cell_rect.center)
                 window.blit(result_text, result_rect)
 
-    # Check if it's the 18th try
-    if len(input_values) == max_values:
-        # Display "YOU LOSE!" on one line
-        lose_text = font.render("YOU LOSE!", True, (255, 0, 0))
-        lose_rect = lose_text.get_rect(center=(window_width // 2, window_height // 2 - 30))
-        window.blit(lose_text, lose_rect)
+    # Check if it's the 18th try or the game is won
+    if len(input_values) == max_values or game_won:
+        if game_won:
+            # Display "YOU WIN!" on one line
+            win_text = font.render("YOU WIN!", True, (0, 255, 0))
+            win_rect = win_text.get_rect(center=(window_width // 2, window_height // 2 - 30))
+            window.blit(win_text, win_rect)
+        else:
+            # Display "YOU LOSE!" on one line
+            lose_text = font.render("YOU LOSE!", True, (255, 0, 0))
+            lose_rect = lose_text.get_rect(center=(window_width // 2, window_height // 2 - 30))
+            window.blit(lose_text, lose_rect)
 
-        # Display "The answer is <number>." on the next line
-        answer_text = font.render("The answer is " + random_number + ".", True, (255, 0, 0))
-        answer_rect = answer_text.get_rect(center=(window_width // 2, window_height // 2 + 30))
-        window.blit(answer_text, answer_rect)
+            # Display "The answer is <number>." on the next line
+            answer_text = font.render("The answer is " + random_number + ".", True, (255, 0, 0))
+            answer_rect = answer_text.get_rect(center=(window_width // 2, window_height // 2 + 30))
+            window.blit(answer_text, answer_rect)
 
         # Disable buttons and keyboard inputs
         buttons = []  # Empty the buttons list
