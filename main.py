@@ -11,7 +11,7 @@ window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Strike The Number")
 
 # Set up the font
-font_size = 100
+font_size = 50
 font = pygame.font.Font(None, font_size)
 input_font = pygame.font.Font(None, 50)
 table_font = pygame.font.Font(None, 36)
@@ -30,8 +30,8 @@ def calculate_balls_and_strikes(random_num, input_num):
 
 # Function to create a rectangular restart button
 def create_restart_button():
-    button_width = 100
-    button_height = 40
+    button_width = 160
+    button_height = 80
     button_rect = pygame.Rect(10, 10, button_width, button_height)
     pygame.draw.rect(window, pygame.Color('orange'), button_rect)
     restart_text = input_font.render("R", True, (0, 0, 0))
@@ -44,8 +44,8 @@ random_number = generate_random_number()
 print(f"Random Number: {random_number}")
 
 # Button settings
-button_width = 100
-button_height = 60
+button_width = 160
+button_height = 80
 button_margin = 10
 
 # Create buttons for digits, backspace, and enter
@@ -67,9 +67,9 @@ disabled_digits = set()
 input_values = []
 max_values = 18
 results = []
-color_inactive = pygame.Color('lightskyblue3')
-color_active = pygame.Color('dodgerblue2')
-color = color_inactive
+color_active = pygame.Color('lightskyblue3')
+#color_active = pygame.Color('dodgerblue2')
+color = color_active
 
 # Main loop
 game_number = 1
@@ -161,7 +161,7 @@ while running:
     # Display "<Game #>" on the center top
     game_text = f"Game {game_number}"
     game_text_surface = font.render(game_text, True, (0, 0, 0))
-    game_text_rect = game_text_surface.get_rect(center=(window_width // 2, 20))  # Adjust the y-coordinate as needed
+    game_text_rect = game_text_surface.get_rect(center=(window_width // 2, 40))  # Adjust the y-coordinate as needed
     window.blit(game_text_surface, game_text_rect)
 
     # Render the input text
@@ -173,7 +173,7 @@ while running:
 
     # Draw buttons
     for rect, label in buttons:
-        button_color = color_inactive
+        button_color = color_active
         if label == '>>' and len(input_text) != 3:
             button_color = pygame.Color('grey')
         pygame.draw.rect(window, button_color, rect)
