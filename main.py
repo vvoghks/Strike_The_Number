@@ -73,7 +73,6 @@ color = color_inactive
 
 # Main loop
 running = True
-tries = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -100,7 +99,6 @@ while running:
                                     results.pop(0)
                                 input_text = ''
                                 disabled_digits.clear()
-                                tries += 1
                         else:
                             if len(input_text) < 3 and label not in disabled_digits:
                                 input_text += label
@@ -114,7 +112,30 @@ while running:
                     results.clear()
                     input_text = ''
                     disabled_digits.clear()
-                    tries = 0
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_BACKSPACE:
+                if input_text:
+                    disabled_digits.discard(input_text[-1])
+                    input_text = input_text[:-1]
+            elif event.key == pygame.K_RETURN:
+                if len(input_text) == 3:
+                    balls, strikes = calculate_balls_and_strikes(random_number, input_text)
+                    if strikes == 3:
+                        result_text = "Strike Out"
+                    else:
+                        result_text = f"{balls}B - {strikes}S"
+                    input_values.append(input_text)
+                    results.append(result_text)
+                    if len(input_values) > max_values:
+                        input_values.pop(0)
+                        results.pop(0)
+                    input_text = ''
+                    disabled_digits.clear()
+            elif event.key in [pygame.K_0, pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9]:
+                digit = event.key - pygame.K_0  # Convert key to digit value
+                if len(input_text) < 3 and str(digit) not in disabled_digits:
+                    input_text += str(digit)
+                    disabled_digits.add(str(digit))
 
     # Fill the screen with a white background
     window.fill((255, 255, 255))
